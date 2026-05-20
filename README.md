@@ -4,7 +4,7 @@ This is a minimum viable product (MVP) backend in Ruby for a collaborative grant
 
 ## Features
 - Built with Ruby and Sinatra for a lightweight, fast MVP.
-- Implements 5 RESTful API endpoints.
+- Implements 6 RESTful API endpoints.
 - Populated with realistic, hardcoded mock data focusing on grants, organizations, and platform metrics.
 
 ## Setup
@@ -151,7 +151,55 @@ curl -X GET "http://localhost:9292/api/v1/organizations?type=Funder"
 }
 ```
 
-### 5. Platform Metrics
+### 5. Get Organization Details
+**GET** `/api/v1/organizations/:id`
+Returns detailed information for a specific organization ID, including its associated grants.
+
+**Example Request:**
+```bash
+curl -X GET http://localhost:9292/api/v1/organizations/org-100
+```
+
+**Example Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "org-100",
+    "name": "The Gates Foundation",
+    "type": "Funder",
+    "location": "Seattle, WA",
+    "grants": [
+      {
+        "id": "g-1001",
+        "title": "Global Clean Water Initiative",
+        "description": "Funding for water purification systems in rural communities.",
+        "amount_requested": 250000.0,
+        "amount_awarded": 250000.0,
+        "status": "Active",
+        "grantee_organization_id": "org-200",
+        "funder_organization_id": "org-100",
+        "start_date": "2024-01-15",
+        "end_date": "2025-01-14"
+      },
+      {
+        "id": "g-1002",
+        "title": "Urban Education Excellence",
+        "description": "Supporting STEM education in inner-city schools.",
+        "amount_requested": 150000.0,
+        "amount_awarded": 120000.0,
+        "status": "Closed",
+        "grantee_organization_id": "org-201",
+        "funder_organization_id": "org-100",
+        "start_date": "2023-05-01",
+        "end_date": "2024-04-30"
+      }
+    ]
+  }
+}
+```
+
+### 6. Platform Metrics
 **GET** `/api/v1/metrics`
 Returns high-level statistics for a dashboard, such as total funding awarded and active grants.
 

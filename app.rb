@@ -67,6 +67,7 @@ get '/' do
       "GET /api/v1/grants/:id",
       "POST /api/v1/grants",
       "GET /api/v1/organizations",
+      "GET /api/v1/organizations/:id",
       "GET /api/v1/metrics"
     ]
   }.to_json
@@ -158,7 +159,30 @@ get '/api/v1/organizations' do
   }.to_json
 end
 
-# 5. GET /api/v1/metrics
+# 5. GET /api/v1/organizations/:id
+# Retrieve details of a specific organization by its ID, including related grants.
+get '/api/v1/organizations/:id' do
+  org = ORGANIZATIONS.find { |o| o[:id] == params[:id] }
+  
+  if org
+    # Fetch related grants for this organization
+    org_grants = GRANTS.select { |g| g[:funder_organization_id] == params[:id] || g[:grantee_organization_id] == params[:id] }
+    
+    status 200
+    {
+      success: true,
+      data: org.merge(grants: org_grants)
+    }.to_json
+  else
+    status 404
+    {
+      success: false,
+      error: "Organization not found with ID: #{params[:id]}"
+    }.to_json
+  end
+end
+
+# 6. GET /api/v1/metrics
 # Retrieve high-level platform metrics for a dashboard.
 get '/api/v1/metrics' do
   # Calculate some fake but realistic metrics based on our mock data
